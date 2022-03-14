@@ -32,7 +32,7 @@ jobs:
         run: deno coverage --lcov cov_profile/ > cov.lcov
 
       - name: Upload coverage report
-      - uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v2
         with:
           files: cov.lcov
           fail_ci_if_error: true
