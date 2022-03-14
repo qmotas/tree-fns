@@ -1,0 +1,38 @@
+name: Deno
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup repo
+        uses: actions/checkout@v2
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Verify formatting
+        run: deno fmt --check
+
+      - name: Run linter
+        run: deno lint
+
+      - name: Run tests
+        run: deno test --import-map import_map.json --coverage=cov_profile/
+
+      - name: Create coverage report
+        run: deno coverage --lcov cov_profile/ > cov.lcov
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v2
+        with:
+          files: cov.lcov
+          fail_ci_if_error: true
