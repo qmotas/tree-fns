@@ -113,7 +113,7 @@ export const addNode = <T>(
   nodeToBeAdded: TreeNode<T>,
   dest: {
     parentId: T;
-    index: number;
+    index?: number;
   },
 ): TreeNode<T> => {
   const targetAddedRootNode = map(rootNode, (srcNode) => {
@@ -130,12 +130,15 @@ export const addNode = <T>(
     if (srcNode.id !== dest.parentId) {
       return { ...srcNode };
     }
+
+    const destIndex = dest.index ?? srcNode.children.length;
+
     return {
       ...srcNode,
       children: [
-        ...srcNode.children.slice(0, dest.index),
+        ...srcNode.children.slice(0, destIndex),
         nodeToBeAdded,
-        ...srcNode.children.slice(dest.index),
+        ...srcNode.children.slice(destIndex),
       ],
     };
   });

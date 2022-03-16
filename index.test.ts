@@ -426,7 +426,7 @@ Deno.test("addNode()", () => {
     },
   );
 
-  // adding last child (even if index is over node array's length)
+  // adding last child (index is over node array's length)
   assertEquals(
     addNode(
       {
@@ -450,6 +450,33 @@ Deno.test("addNode()", () => {
         { id: "1-2", children: [] },
         { id: "1-3", children: [] },
         { id: "x", children: [{ id: "y", children: [] }] }, // to be added (specified index is 4 but actual destination is 3)
+      ],
+    },
+  );
+
+  // adding last child (default)
+  assertEquals(
+    addNode(
+      {
+        id: "1",
+        children: [
+          { id: "1-1", children: [] },
+          { id: "1-2", children: [] },
+          { id: "1-3", children: [] },
+        ],
+      },
+      { id: "x", children: [{ id: "y", children: [] }] },
+      {
+        parentId: "1",
+      },
+    ),
+    {
+      id: "1",
+      children: [
+        { id: "1-1", children: [] },
+        { id: "1-2", children: [] },
+        { id: "1-3", children: [] },
+        { id: "x", children: [{ id: "y", children: [] }] }, // to be added (index not specified)
       ],
     },
   );
