@@ -1,6 +1,6 @@
-export type TreeNode<T> = {
+export type TreeNode<T, U> = U & {
   id: T;
-  children: Array<TreeNode<T>>;
+  children: Array<TreeNode<T, U>>;
 };
 
 export type NodeLocation<T> = {
@@ -8,10 +8,10 @@ export type NodeLocation<T> = {
   index: number;
 };
 
-const doWalk = <T>(
-  node: TreeNode<T>,
+const doWalk = <T, U>(
+  node: TreeNode<T, U>,
   visit: (
-    node: TreeNode<T>,
+    node: TreeNode<T, U>,
     location: NodeLocation<T>,
   ) => void | boolean,
   location: NodeLocation<T>,
@@ -32,9 +32,9 @@ const doWalk = <T>(
   }
 };
 
-export const walk = <T>(
-  rootNode: TreeNode<T>,
-  visit: (node: TreeNode<T>, location: NodeLocation<T>) => void | boolean,
+export const walk = <T, U>(
+  rootNode: TreeNode<T, U>,
+  visit: (node: TreeNode<T, U>, location: NodeLocation<T>) => void | boolean,
 ) => {
   doWalk(rootNode, visit, {
     parentPath: [],
@@ -42,11 +42,11 @@ export const walk = <T>(
   });
 };
 
-export const findNode = <T>(
-  rootNode: TreeNode<T>,
-  test: (node: TreeNode<T>) => boolean,
-): TreeNode<T> | undefined => {
-  let foundNode: TreeNode<T> | undefined;
+export const findNode = <T, U>(
+  rootNode: TreeNode<T, U>,
+  test: (node: TreeNode<T, U>) => boolean,
+): TreeNode<T, U> | undefined => {
+  let foundNode: TreeNode<T, U> | undefined;
 
   walk(rootNode, (node) => {
     if (test(node)) {
@@ -58,17 +58,17 @@ export const findNode = <T>(
   return foundNode;
 };
 
-export const findNodeById = <T>(
-  rootNode: TreeNode<T>,
+export const findNodeById = <T, U>(
+  rootNode: TreeNode<T, U>,
   id: T,
-): TreeNode<T> | undefined => {
+): TreeNode<T, U> | undefined => {
   return findNode(rootNode, (node) => node.id === id);
 };
 
-export const map = <T>(
-  node: TreeNode<T>,
-  mapNode: (node: TreeNode<T>) => TreeNode<T>,
-): TreeNode<T> => {
+export const map = <T, U>(
+  node: TreeNode<T, U>,
+  mapNode: (node: TreeNode<T, U>) => TreeNode<T, U>,
+): TreeNode<T, U> => {
   const mappedNode = mapNode(node);
   return {
     ...mappedNode,
@@ -78,17 +78,17 @@ export const map = <T>(
   };
 };
 
-export const copy = <T>(
-  node: TreeNode<T>,
-): TreeNode<T> => {
+export const copy = <T, U>(
+  node: TreeNode<T, U>,
+): TreeNode<T, U> => {
   return map(node, (n) => n);
 };
 
-export const removeNode = <T>(
-  rootNode: TreeNode<T>,
+export const removeNode = <T, U>(
+  rootNode: TreeNode<T, U>,
   id: T,
-): [TreeNode<T>, TreeNode<T> | undefined] => {
-  let targetNode: TreeNode<T> | undefined;
+): [TreeNode<T, U>, TreeNode<T, U> | undefined] => {
+  let targetNode: TreeNode<T, U> | undefined;
 
   const targetRemovedRootNode = map(rootNode, (node) => {
     if (targetNode) {
@@ -108,14 +108,14 @@ export const removeNode = <T>(
   return [targetRemovedRootNode, targetNode];
 };
 
-export const addNode = <T>(
-  rootNode: TreeNode<T>,
-  nodeToBeAdded: TreeNode<T>,
+export const addNode = <T, U>(
+  rootNode: TreeNode<T, U>,
+  nodeToBeAdded: TreeNode<T, U>,
   dest: {
     parentId: T;
     index?: number;
   },
-): TreeNode<T> => {
+): TreeNode<T, U> => {
   const targetAddedRootNode = map(rootNode, (srcNode) => {
     if (nodeToBeAdded.id === dest.parentId) {
       throw new Error(
@@ -146,14 +146,14 @@ export const addNode = <T>(
   return targetAddedRootNode;
 };
 
-export const moveNode = <T>(
-  rootNode: TreeNode<T>,
+export const moveNode = <T, U>(
+  rootNode: TreeNode<T, U>,
   id: T,
   dest: {
     parentId: T;
     index: number;
   },
-): TreeNode<T> => {
+): TreeNode<T, U> => {
   const [targetRemoved, targetNode] = removeNode(rootNode, id);
   if (!targetNode) {
     return copy(rootNode);

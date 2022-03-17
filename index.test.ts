@@ -201,6 +201,31 @@ Deno.test("map()", () => {
       },
     ],
   });
+
+  // map to another type of node
+  assertEquals(
+    map(testData, (node) => ({ ...node, data: `#${node.id}` })),
+    {
+      id: "1",
+      data: "#1",
+      children: [
+        {
+          id: "2",
+          data: "#2",
+          children: [{ id: "4", data: "#4", children: [] }],
+        },
+        {
+          id: "3",
+          data: "#3",
+          children: [{
+            id: "5",
+            data: "#5",
+            children: [{ id: "6", data: "#6", children: [] }],
+          }],
+        },
+      ],
+    },
+  );
 });
 
 Deno.test("copy()", () => {
