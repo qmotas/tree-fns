@@ -12,7 +12,7 @@ import {
 import { assertEquals, assertThrows } from "testing/asserts";
 
 Deno.test("walk()", () => {
-  const trace: Array<[string, NodeLocation<string>]> = [];
+  const trace: Array<[string, NodeLocation]> = [];
 
   walk(
     {
@@ -30,7 +30,7 @@ Deno.test("walk()", () => {
     },
   );
 
-  const expectedTrace: Array<[string, NodeLocation<string>]> = [
+  const expectedTrace: Array<[string, NodeLocation]> = [
     ["1", { parentPath: [], index: 0 }],
     ["2", { parentPath: ["1"], index: 0 }],
     ["4", { parentPath: ["1", "2"], index: 0 }],
@@ -42,7 +42,7 @@ Deno.test("walk()", () => {
   assertEquals(trace, expectedTrace);
 });
 Deno.test("walk() traverses tree until visit returns false", () => {
-  const trace: Array<[string, NodeLocation<string>]> = [];
+  const trace: Array<[string, NodeLocation]> = [];
 
   walk(
     {
@@ -64,7 +64,7 @@ Deno.test("walk() traverses tree until visit returns false", () => {
     },
   );
 
-  const expectedTrace: Array<[string, NodeLocation<string>]> = [
+  const expectedTrace: Array<[string, NodeLocation]> = [
     ["1", { parentPath: [], index: 0 }],
     ["2", { parentPath: ["1"], index: 0 }],
     ["5", { parentPath: ["1", "2"], index: 0 }],
