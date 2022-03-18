@@ -151,7 +151,7 @@ export const moveNode = <T>(
   id: string,
   dest: {
     parentId: string;
-    index: number;
+    index?: number;
   },
 ): TreeNode<T> => {
   const [targetRemoved, targetNode] = removeNode(rootNode, id);

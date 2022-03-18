@@ -706,6 +706,44 @@ Deno.test("moveNode()", () => {
     },
   );
 
+  // moving to last at the same depth (when index not specified)
+  assertEquals(
+    moveNode(
+      {
+        id: "1",
+        children: [
+          { id: "1-1", children: [] },
+          { id: "1-2", children: [] },
+          {
+            id: "1-3",
+            children: [
+              { id: "1-3-1", children: [] },
+              { id: "1-3-2", children: [{ id: "1-3-2-1", children: [] }] },
+              { id: "1-3-3", children: [] },
+            ],
+          },
+        ],
+      },
+      "1-2",
+      { parentId: "1" },
+    ),
+    {
+      id: "1",
+      children: [
+        { id: "1-1", children: [] },
+        {
+          id: "1-3",
+          children: [
+            { id: "1-3-1", children: [] },
+            { id: "1-3-2", children: [{ id: "1-3-2-1", children: [] }] },
+            { id: "1-3-3", children: [] },
+          ],
+        },
+        { id: "1-2", children: [] }, // moved
+      ],
+    },
+  );
+
   // moving between the different depths (and destination index is over the node list's length)
   assertEquals(
     moveNode(
