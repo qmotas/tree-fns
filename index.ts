@@ -8,6 +8,8 @@ export type NodeLocation = {
   index: number;
 };
 
+export type FindNodeResult<T> = TreeNode<T> & { location: NodeLocation };
+
 const doWalk = <T>(
   node: TreeNode<T>,
   visit: (
@@ -45,12 +47,12 @@ export const walk = <T>(
 export const findNode = <T>(
   rootNode: TreeNode<T>,
   test: (node: TreeNode<T>) => boolean,
-): TreeNode<T> | undefined => {
-  let foundNode: TreeNode<T> | undefined;
+): FindNodeResult<T> | undefined => {
+  let foundNode: FindNodeResult<T> | undefined;
 
-  walk(rootNode, (node) => {
+  walk(rootNode, (node, location) => {
     if (test(node)) {
-      foundNode = node;
+      foundNode = { ...node, location };
       return false;
     }
   });
@@ -61,7 +63,7 @@ export const findNode = <T>(
 export const findNodeById = <T>(
   rootNode: TreeNode<T>,
   id: string,
-): TreeNode<T> | undefined => {
+): FindNodeResult<T> | undefined => {
   return findNode(rootNode, (node) => node.id === id);
 };
 
