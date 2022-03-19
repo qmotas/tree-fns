@@ -10,6 +10,8 @@ export type NodeLocation = {
 
 export type FindNodeResult<T> = TreeNode<T> & { location: NodeLocation };
 
+export type FlattenedNode<T> = TreeNode<T> & { location: NodeLocation };
+
 const doWalk = <T>(
   node: TreeNode<T>,
   visit: (
@@ -162,4 +164,14 @@ export const moveNode = <T>(
   }
 
   return addNode(targetRemoved, targetNode, dest);
+};
+
+export const flatten = <T>(
+  rootNode: TreeNode<T>,
+): Array<FlattenedNode<T>> => {
+  const flattened: Array<FlattenedNode<T>> = [];
+  walk(rootNode, (node, location) => {
+    flattened.push({ ...node, location });
+  });
+  return flattened;
 };
