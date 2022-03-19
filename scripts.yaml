@@ -1,0 +1,9 @@
+scripts:
+  lint: deno lint
+  format: deno fmt
+  pre-commit:
+    cmd:
+      - vr lint
+      - vr format
+    gitHook: pre-commit
+  test: deno test --import-map import_map.json

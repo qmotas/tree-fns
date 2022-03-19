@@ -4,4 +4,16 @@
 
 **tree-fns** provides simple utility functions for tree structure.
 
-- Zero dependencies
+## Prerequisite
+
+- deno >= 1.19
+
+## Development
+
+If you're using Velociraptor, run
+
+```sh
+vr
+```
+
+and pre-commit hook will be installed.
