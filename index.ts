@@ -1,4 +1,4 @@
-export type TreeNode<T> = T & {
+export type TreeNode<T = Record<never, never>> = T & {
   id: string;
   children: Array<TreeNode<T>>;
 };
