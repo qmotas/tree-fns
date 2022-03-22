@@ -18,15 +18,11 @@ jobs:
         uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
-
-      - name: Verify formatting
-        run: deno fmt --check
-
       - name: Run linter
-        run: deno lint
+        run: deno task lint
 
       - name: Run tests
-        run: deno test --import-map import_map.json --coverage=cov_profile/
+        run: deno task test
 
       - name: Create coverage report
         run: deno coverage --lcov cov_profile/ > cov.lcov
