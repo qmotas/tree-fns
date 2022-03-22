@@ -4,9 +4,8 @@
 
 **tree-fns** provides simple utility functions for tree structure.
 
-## Prerequisite
-
-- deno >= 1.19
+Each transformation function is non-destructive, making it suitable for working
+with immutable tree structures, for example, when using Recoil.
 
 ## Development
 
@@ -17,3 +16,228 @@ vr
 ```
 
 and pre-commit hook will be installed.
+
+## Model
+
+```ts
+const tree: TreeNode = {
+  id: "root",
+  children: [
+    {
+      id: "1",
+      children: [],
+    },
+    {
+      id: "2",
+      children: [],
+    },
+  ],
+};
+```
+
+## Functions
+
+### `walk()`
+
+Only pre-order traversing is supported.
+
+```ts
+walk(
+  {
+    id: "root",
+    children: [
+      {
+        id: "1",
+        children: [{ id: "1-1", children: [] }],
+      },
+      {
+        id: "2",
+        children: [{ id: "2-1", children: [] }],
+      },
+    ],
+  },
+  (node, location) => {
+    console.log(node.id); // "root" -> "1" -> "1-1" -> "2" -> "2-1"
+    if (node.id === "1") {
+      console.log(location); // { parentPath: ["root"], index: 0 }
+    }
+  },
+);
+```
+
+### `findNode()` | `findNodeById()`
+
+```ts
+const tree: TreeNode = {
+  id: "root",
+  children: [
+    {
+      id: "1",
+      children: [{ id: "1-1", children: [] }],
+    },
+    {
+      id: "2",
+      children: [{ id: "2-1", children: [] }],
+    },
+  ],
+};
+
+const node = findNode(tree, (node) => node.id === "1");
+// {
+//   id: '1',
+//   children: [{ id: '1-1', children: [] }],
+//   location: {
+//     parentPath: ['root'],
+//     index: 0,
+//   },
+// }
+
+findNode(tree, (node) => node.id === "x"); // undefined
+```
+
+or
+
+```ts
+const node = findNodeById(tree, "1");
+```
+
+### `map()`
+
+```ts
+const tree = {
+  id: "1",
+  data: "foo",
+  children: [
+    {
+      id: "2",
+      data: "bar",
+      children: [],
+    },
+  ],
+};
+
+const mapped = map<{ data: string }>(tree, (node) => ({
+  ...node,
+  data: `#${node.data}`,
+}));
+// {
+//   id: '1',
+//   data: '#foo',
+//   children: [
+//     {
+//       id: '2',
+//       data: '#bar',
+//       children: [],
+//     },
+//   ],
+// }
+```
+
+### `copy()`
+
+```ts
+const tree = {
+  id: "1",
+  children: [{ id: "2", children: [] }],
+};
+
+const copied = copy(tree);
+// {
+//   id: '1',
+//   children: [{ id: '2', children: [] }],
+// }
+
+console.log(tree === copied); // false
+```
+
+### `addNode()`
+
+```ts
+const srcTree = {
+  id: "1",
+  children: [{ id: "2", children: [] }],
+};
+
+const nodeToBeAdded = { id: "3", children: [] };
+
+const destTree = addNode(srcTree, nodeToBeAdded, { parentId: "1", index: 0 });
+// {
+//   id: '1',
+//   children: [
+//     { id: '3', children: [] },
+//     { id: '2', children: [] },
+//   ],
+// }
+```
+
+### `removeNode()`
+
+```ts
+const srcTree = {
+  id: "1",
+  children: [
+    { id: "2", children: [] },
+    { id: "3", children: [] },
+  ],
+};
+const [destTree, removedNode] = removeNode(srcTree, "3");
+
+console.log(removedNode); // { id: '3', children: [] }
+console.log(destTree);
+// {
+//   id: '1',
+//   children: [
+//     { id: '2', children: [] },
+//   ],
+// }
+
+removeNode(srcTree, "x"); // undefined
+```
+
+### `moveNode()`
+
+```ts
+const srcTree = {
+  id: "1",
+  children: [
+    { id: "2", children: [] },
+    { id: "3", children: [] },
+  ],
+};
+
+const destTree = moveNode(srcTree, "2", { parentId: "3", index: 0 });
+// {
+//   id: '1',
+//   children: [
+//     { id: '3', children: [
+//       { id: '2', children: [] }
+//     ] }
+//   ],
+// }
+```
+
+### `flatten()`
+
+```ts
+const tree = {
+  id: "1",
+  children: [
+    { id: "2", children: [] },
+    { id: "3", children: [] },
+  ],
+};
+
+const flattened = flatten(tree);
+// [
+//   {
+//     id: '1',
+//     children: [
+//       { id: '2', children: [] },
+//       { id: '3', children: [] },
+//     ],
+//     location: { parentPath: [], index: 0 },
+//   },
+//   { id: '2', children: [], location: { parentPath: ['1'], index: 0 } },
+//   { id: '3', children: [], location: { parentPath: ['1'], index: 1 } },
+// ]
+```
