@@ -37,22 +37,22 @@ const doWalk = <T>(
 };
 
 export const walk = <T>(
-  rootNode: TreeNode<T>,
+  tree: TreeNode<T>,
   visit: (node: TreeNode<T>, location: NodeLocation) => void | boolean,
 ) => {
-  doWalk(rootNode, visit, {
+  doWalk(tree, visit, {
     parentPath: [],
     index: 0,
   });
 };
 
 export const findNode = <T>(
-  rootNode: TreeNode<T>,
+  tree: TreeNode<T>,
   test: (node: TreeNode<T>) => boolean,
 ): FindNodeResult<T> | undefined => {
   let foundNode: FindNodeResult<T> | undefined;
 
-  walk(rootNode, (node, location) => {
+  walk(tree, (node, location) => {
     if (test(node)) {
       foundNode = { ...node, location };
       return false;
@@ -63,10 +63,10 @@ export const findNode = <T>(
 };
 
 export const findNodeById = <T>(
-  rootNode: TreeNode<T>,
+  tree: TreeNode<T>,
   id: string,
 ): FindNodeResult<T> | undefined => {
-  return findNode(rootNode, (node) => node.id === id);
+  return findNode(tree, (node) => node.id === id);
 };
 
 export const map = <T>(
@@ -83,18 +83,18 @@ export const map = <T>(
 };
 
 export const copy = <T>(
-  node: TreeNode<T>,
+  tree: TreeNode<T>,
 ): TreeNode<T> => {
-  return map(node, (n) => n);
+  return map(tree, (n) => n);
 };
 
 export const removeNode = <T>(
-  rootNode: TreeNode<T>,
+  tree: TreeNode<T>,
   id: string,
 ): [TreeNode<T>, TreeNode<T> | undefined] => {
   let targetNode: TreeNode<T> | undefined;
 
-  const targetRemovedRootNode = map(rootNode, (node) => {
+  const targetRemovedTree = map(tree, (node) => {
     if (targetNode) {
       return { ...node };
     }
@@ -109,25 +109,25 @@ export const removeNode = <T>(
     };
   });
 
-  return [targetRemovedRootNode, targetNode];
+  return [targetRemovedTree, targetNode];
 };
 
 export const addNode = <T>(
-  rootNode: TreeNode<T>,
+  tree: TreeNode<T>,
   nodeToBeAdded: TreeNode<T>,
   dest: {
     parentId: string;
     index?: number;
   },
 ): TreeNode<T> => {
-  const targetAddedRootNode = map(rootNode, (srcNode) => {
+  const targetAddedTree = map(tree, (srcNode) => {
     if (nodeToBeAdded.id === dest.parentId) {
       throw new Error(
         "The id of node to be added must not be same as destination node's.",
       );
     }
 
-    if (findNodeById(rootNode, nodeToBeAdded.id)) {
+    if (findNodeById(tree, nodeToBeAdded.id)) {
       throw new Error("The id of node to be added must be unique.");
     }
 
@@ -147,30 +147,30 @@ export const addNode = <T>(
     };
   });
 
-  return targetAddedRootNode;
+  return targetAddedTree;
 };
 
 export const moveNode = <T>(
-  rootNode: TreeNode<T>,
+  tree: TreeNode<T>,
   id: string,
   dest: {
     parentId: string;
     index?: number;
   },
 ): TreeNode<T> => {
-  const [targetRemoved, targetNode] = removeNode(rootNode, id);
+  const [targetRemoved, targetNode] = removeNode(tree, id);
   if (!targetNode) {
-    return copy(rootNode);
+    return copy(tree);
   }
 
   return addNode(targetRemoved, targetNode, dest);
 };
 
 export const flatten = <T>(
-  rootNode: TreeNode<T>,
+  tree: TreeNode<T>,
 ): Array<FlattenedNode<T>> => {
   const flattened: Array<FlattenedNode<T>> = [];
-  walk(rootNode, (node, location) => {
+  walk(tree, (node, location) => {
     flattened.push({ ...node, location });
   });
   return flattened;
