@@ -35,6 +35,14 @@ const tree: TreeNode = {
 };
 ```
 
+```ts
+const tree: TreeNode<{ data: string }> = {
+  id: "root",
+  data: "yay",
+  children: [],
+};
+```
+
 ## Functions
 
 ### `walk()`
@@ -104,7 +112,7 @@ const node = findNodeById(tree, "1");
 ### `map()`
 
 ```ts
-const tree = {
+const tree: TreeNode<{ data: string }> = {
   id: "1",
   data: "foo",
   children: [
