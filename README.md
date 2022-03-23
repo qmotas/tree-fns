@@ -13,16 +13,6 @@ with immutable tree structures, for example, when using Recoil.
 
 - deno >= 1.20
 
-### Setup
-
-If you're using Velociraptor, run
-
-```sh
-vr
-```
-
-and pre-commit hook will be installed.
-
 ## Model
 
 ```ts

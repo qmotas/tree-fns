@@ -1,5 +1,0 @@
-scripts:
-  pre-commit:
-    cmd:
-      - deno task format; deno task lint
-    gitHook: pre-commit
