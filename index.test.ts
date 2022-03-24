@@ -831,6 +831,52 @@ Deno.test("moveNode()", () => {
       ],
     },
   );
+
+  // throws error if destination node does not exist
+  assertThrows(() => {
+    moveNode(
+      {
+        id: "1",
+        children: [
+          {
+            id: "1-1",
+            children: [
+              { id: "1-1-1", children: [] },
+            ],
+          },
+          { id: "1-2", children: [] },
+        ],
+      },
+      "1-1",
+      {
+        parentId: "1-3",
+        index: 0,
+      },
+    );
+  });
+
+  // throws error if destination node is a descendant node of the source node
+  assertThrows(() => {
+    moveNode(
+      {
+        id: "1",
+        children: [
+          {
+            id: "1-1",
+            children: [
+              { id: "1-1-1", children: [] },
+            ],
+          },
+          { id: "1-2", children: [] },
+        ],
+      },
+      "1-1",
+      {
+        parentId: "1-1-1",
+        index: 0,
+      },
+    );
+  });
 });
 
 Deno.test("flatten()", () => {

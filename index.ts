@@ -163,6 +163,16 @@ export const moveNode = <T>(
     return copy(tree);
   }
 
+  if (!findNodeById(tree, dest.parentId)) {
+    throw new Error(`Destination node (id:${dest.parentId}) does not exist.`);
+  }
+
+  if (findNodeById(targetNode, dest.parentId)) {
+    throw new Error(
+      `Target node (id:${id}) cannot be moved into its descendant node (id:${dest.parentId}).`,
+    );
+  }
+
   return addNode(targetRemoved, targetNode, dest);
 };
 
