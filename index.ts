@@ -69,15 +69,17 @@ export const findNodeById = <T>(
   return findNode(tree, (node) => node.id === id);
 };
 
-export const map = <T>(
+export const map = <T, U>(
   node: TreeNode<T>,
-  mapNode: (node: TreeNode<T>) => TreeNode<T>,
-): TreeNode<T> => {
-  const mappedNode = mapNode(node);
+  mapNodeAttributes: (node: TreeNode<T>) => { id: string } & U,
+  mapChildren?: (node: TreeNode<T>) => Array<TreeNode<T>>,
+): TreeNode<U> => {
+  const mappedNode = mapNodeAttributes(node);
   return {
     ...mappedNode,
     children: [
-      ...mappedNode.children.map((childNode) => map(childNode, mapNode)),
+      ...(mapChildren?.(node) ?? node.children)
+        .map((childNode) => map(childNode, mapNodeAttributes, mapChildren)),
     ],
   };
 };
@@ -92,24 +94,25 @@ export const removeNode = <T>(
   tree: TreeNode<T>,
   id: string,
 ): [TreeNode<T>, TreeNode<T> | undefined] => {
-  let targetNode: TreeNode<T> | undefined;
+  const targetNode: TreeNode<T> | undefined = tree.children.find((node) =>
+    node.id === id
+  );
 
-  const targetRemovedTree = map(tree, (node) => {
-    if (targetNode) {
-      return { ...node };
-    }
+  if (targetNode) {
+    return [
+      {
+        ...tree,
+        children: tree.children.filter((node) => node !== targetNode),
+      },
+      targetNode,
+    ];
+  }
 
-    targetNode = node.children.find((childNode) => childNode.id === id);
-
-    return {
-      ...node,
-      children: [
-        ...node.children.filter((childNode) => childNode !== targetNode),
-      ],
-    };
-  });
-
-  return [targetRemovedTree, targetNode];
+  const removeResults = tree.children.map((node) => removeNode(node, id));
+  return [{
+    ...tree,
+    children: removeResults.map(([node]) => node),
+  }, removeResults.find(([, removed]) => removed != null)?.[1]];
 };
 
 export const addNode = <T>(
@@ -120,31 +123,28 @@ export const addNode = <T>(
     index?: number;
   },
 ): TreeNode<T> => {
-  const targetAddedTree = map(tree, (srcNode) => {
-    if (nodeToBeAdded.id === dest.parentId) {
-      throw new Error(
-        "The id of node to be added must not be same as destination node's.",
-      );
+  if (nodeToBeAdded.id === dest.parentId) {
+    throw new Error(
+      "The id of node to be added must not be same as destination node's.",
+    );
+  }
+
+  if (findNodeById(tree, nodeToBeAdded.id)) {
+    throw new Error("The id of node to be added must be unique.");
+  }
+
+  const targetAddedTree = map(tree, (node) => node, (node) => {
+    if (node.id !== dest.parentId) {
+      return node.children;
     }
 
-    if (findNodeById(tree, nodeToBeAdded.id)) {
-      throw new Error("The id of node to be added must be unique.");
-    }
+    const destIndex = dest.index ?? node.children.length;
 
-    if (srcNode.id !== dest.parentId) {
-      return { ...srcNode };
-    }
-
-    const destIndex = dest.index ?? srcNode.children.length;
-
-    return {
-      ...srcNode,
-      children: [
-        ...srcNode.children.slice(0, destIndex),
-        nodeToBeAdded,
-        ...srcNode.children.slice(destIndex),
-      ],
-    };
+    return [
+      ...node.children.slice(0, destIndex),
+      nodeToBeAdded,
+      ...node.children.slice(destIndex),
+    ];
   });
 
   return targetAddedTree;

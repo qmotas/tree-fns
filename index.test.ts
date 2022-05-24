@@ -8,6 +8,7 @@ import {
   moveNode,
   NodeLocation,
   removeNode,
+  TreeNode,
   walk,
 } from "./index.ts";
 import { assertEquals, assertThrows } from "testing/asserts";
@@ -192,7 +193,7 @@ Deno.test("findNodeById()", () => {
 });
 
 Deno.test("map()", () => {
-  const testData = {
+  const testData: TreeNode = {
     id: "1",
     children: [
       { id: "2", children: [{ id: "4", children: [] }] },
@@ -223,7 +224,10 @@ Deno.test("map()", () => {
 
   // map to another type of node
   assertEquals(
-    map(testData, (node) => ({ ...node, data: `#${node.id}` })),
+    map(
+      testData,
+      ({ id }) => ({ id, data: `#${id}` }),
+    ),
     {
       id: "1",
       data: "#1",
