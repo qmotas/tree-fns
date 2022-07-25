@@ -8,6 +8,4 @@ export type NodeLocation = {
   index: number;
 };
 
-export type FindNodeResult<T> = TreeNode<T> & { location: NodeLocation };
-
-export type FlattenedNode<T> = TreeNode<T> & { location: NodeLocation };
+export type NodeWithLocation<T> = [TreeNode<T>, NodeLocation];

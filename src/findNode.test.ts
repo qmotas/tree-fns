@@ -10,11 +10,13 @@ Deno.test("findNode()", () => {
         { id: "2", children: [{ id: "3", children: [] }] },
       ],
     }, (node) => node.id === "1"),
-    {
-      id: "1",
-      children: [{ id: "2", children: [{ id: "3", children: [] }] }],
-      location: { parentPath: [], index: 0 },
-    },
+    [
+      {
+        id: "1",
+        children: [{ id: "2", children: [{ id: "3", children: [] }] }],
+      },
+      { parentPath: [], index: 0 },
+    ],
   );
 
   // find nested node
@@ -32,11 +34,13 @@ Deno.test("findNode()", () => {
         },
       ],
     }, (node) => node.id === "6"),
-    {
-      id: "6",
-      children: [],
-      location: { parentPath: ["1", "3"], index: 1 },
-    },
+    [
+      {
+        id: "6",
+        children: [],
+      },
+      { parentPath: ["1", "3"], index: 1 },
+    ],
   );
 
   // returns undefined if the node does not exist
@@ -66,7 +70,10 @@ Deno.test("findNode()", () => {
       idTrace.push(node.id);
       return node.id === "4";
     }),
-    { id: "4", children: [], location: { parentPath: ["1", "2"], index: 0 } },
+    [
+      { id: "4", children: [] },
+      { parentPath: ["1", "2"], index: 0 },
+    ],
   );
   assertEquals(idTrace, ["1", "2", "4"]);
 });
@@ -80,11 +87,13 @@ Deno.test("findNodeById()", () => {
         { id: "2", children: [{ id: "3", children: [] }] },
       ],
     }, "1"),
-    {
-      id: "1",
-      children: [{ id: "2", children: [{ id: "3", children: [] }] }],
-      location: { parentPath: [], index: 0 },
-    },
+    [
+      {
+        id: "1",
+        children: [{ id: "2", children: [{ id: "3", children: [] }] }],
+      },
+      { parentPath: [], index: 0 },
+    ],
   );
 
   // find nested node
@@ -102,7 +111,10 @@ Deno.test("findNodeById()", () => {
         },
       ],
     }, "6"),
-    { id: "6", children: [], location: { parentPath: ["1", "3"], index: 1 } },
+    [
+      { id: "6", children: [] },
+      { parentPath: ["1", "3"], index: 1 },
+    ],
   );
 
   // returns undefined if node not exist

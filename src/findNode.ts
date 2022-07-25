@@ -1,15 +1,17 @@
 import { walk } from "./walk.ts";
-import { FindNodeResult, TreeNode } from "./types.ts";
+import { NodeWithLocation, TreeNode } from "./types.ts";
+
+type FindNodeResult<T> = NodeWithLocation<T> | undefined;
 
 export const findNode = <T>(
   tree: TreeNode<T>,
   test: (node: TreeNode<T>) => boolean,
 ): FindNodeResult<T> | undefined => {
-  let foundNode: FindNodeResult<T> | undefined;
+  let foundNode: FindNodeResult<T>;
 
   walk(tree, (node, location) => {
     if (test(node)) {
-      foundNode = { ...node, location };
+      foundNode = [node, location];
       return false;
     }
   });
@@ -20,6 +22,6 @@ export const findNode = <T>(
 export const findNodeById = <T>(
   tree: TreeNode<T>,
   id: string,
-): FindNodeResult<T> | undefined => {
+): FindNodeResult<T> => {
   return findNode(tree, (node) => node.id === id);
 };

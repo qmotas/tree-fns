@@ -5,7 +5,7 @@
 **tree-fns** provides simple utility functions for tree structure.
 
 Each transformation function is non-destructive, making it suitable for working
-with immutable tree structures, for example, when using Recoil.
+with immutable tree structures.
 
 ## Development
 
@@ -87,14 +87,16 @@ const tree: TreeNode = {
 };
 
 const node = findNode(tree, (node) => node.id === "1");
-// {
-//   id: '1',
-//   children: [{ id: '1-1', children: [] }],
-//   location: {
+// [
+//   {
+//     id: '1',
+//     children: [{ id: '1-1', children: [] }],
+//   },
+//   {
 //     parentPath: ['root'],
 //     index: 0,
 //   },
-// }
+// ]
 
 findNode(tree, (node) => node.id === "x"); // undefined
 ```
@@ -233,15 +235,17 @@ const tree = {
 
 const flattened = flatten(tree);
 // [
-//   {
-//     id: '1',
-//     children: [
-//       { id: '2', children: [] },
-//       { id: '3', children: [] },
-//     ],
-//     location: { parentPath: [], index: 0 },
-//   },
-//   { id: '2', children: [], location: { parentPath: ['1'], index: 0 } },
-//   { id: '3', children: [], location: { parentPath: ['1'], index: 1 } },
+//   [
+//     {
+//       id: '1',
+//       children: [
+//         { id: '2', children: [] },
+//         { id: '3', children: [] },
+//       ],
+//     },
+//     { parentPath: [], index: 0 },
+//   ],
+//   [{ id: '2', children: [] }, { parentPath: ['1'], index: 0 }],
+//   [{ id: '3', children: [] }, { parentPath: ['1'], index: 1 }],
 // ]
 ```
