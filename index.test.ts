@@ -298,7 +298,7 @@ Deno.test("removeNode()", () => {
   );
 
   // result tree should be a shallow copy
-  const original = { id: "1", children: [] };
+  const original: TreeNode = { id: "1", children: [] };
   assertEquals(removeNode(original, "x")[0] === original, false);
 
   // root node cannot be removed
@@ -599,7 +599,7 @@ Deno.test("addNode()", () => {
   );
 
   // result tree should be a shallow copy
-  const original = { id: "1", children: [] };
+  const original: TreeNode = { id: "1", children: [] };
   assertEquals(
     addNode(original, { id: "x", children: [] }, {
       parentId: "1",
