@@ -4,18 +4,19 @@
   },
   "lint": {
     "files": {
-      "exclude": ["cov_profile/"]
+      "exclude": ["cov_profile", "npm"]
     }
   },
   "fmt": {
     "files": {
-      "exclude": ["cov_profile"]
+      "exclude": ["cov_profile", "npm"]
     }
   },
   "tasks": {
     "lint": "deno fmt --check; deno lint",
     "format": "deno fmt",
     "test": "deno test --import-map import_map.json --coverage=cov_profile/",
-    "coverage": "deno coverage cov_profile/"
+    "coverage": "deno coverage cov_profile/",
+    "build:npm": "deno run -A scripts/build_npm.ts"
   }
 }
