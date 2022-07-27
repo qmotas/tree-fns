@@ -7,6 +7,22 @@
 Each transformation function is non-destructive, making it suitable for working
 with immutable tree structures.
 
+## Usage
+
+tree-fns is available for Deno and Node.js.
+
+### Deno
+
+```ts
+import { TreeNode, walk } from 'https://deno.land/x/tree_fns@v0.1.0/mod.ts';
+```
+
+### npm
+
+```
+npm i tree-fns
+```
+
 ## Development
 
 ### Prerequisite
@@ -17,14 +33,14 @@ with immutable tree structures.
 
 ```ts
 const tree: TreeNode = {
-  id: "root",
+  id: 'root',
   children: [
     {
-      id: "1",
+      id: '1',
       children: [],
     },
     {
-      id: "2",
+      id: '2',
       children: [],
     },
   ],
@@ -33,8 +49,8 @@ const tree: TreeNode = {
 
 ```ts
 const tree: TreeNode<{ data: string }> = {
-  id: "root",
-  data: "yay",
+  id: 'root',
+  data: 'yay',
   children: [],
 };
 ```
@@ -48,24 +64,24 @@ Only pre-order traversing is supported.
 ```ts
 walk(
   {
-    id: "root",
+    id: 'root',
     children: [
       {
-        id: "1",
-        children: [{ id: "1-1", children: [] }],
+        id: '1',
+        children: [{ id: '1-1', children: [] }],
       },
       {
-        id: "2",
-        children: [{ id: "2-1", children: [] }],
+        id: '2',
+        children: [{ id: '2-1', children: [] }],
       },
     ],
   },
   (node, location) => {
     console.log(node.id); // "root" -> "1" -> "1-1" -> "2" -> "2-1"
-    if (node.id === "1") {
+    if (node.id === '1') {
       console.log(location); // { parentPath: ["root"], index: 0 }
     }
-  },
+  }
 );
 ```
 
@@ -73,20 +89,20 @@ walk(
 
 ```ts
 const tree: TreeNode = {
-  id: "root",
+  id: 'root',
   children: [
     {
-      id: "1",
-      children: [{ id: "1-1", children: [] }],
+      id: '1',
+      children: [{ id: '1-1', children: [] }],
     },
     {
-      id: "2",
-      children: [{ id: "2-1", children: [] }],
+      id: '2',
+      children: [{ id: '2-1', children: [] }],
     },
   ],
 };
 
-const node = findNode(tree, (node) => node.id === "1");
+const node = findNode(tree, (node) => node.id === '1');
 // [
 //   {
 //     id: '1',
@@ -98,25 +114,25 @@ const node = findNode(tree, (node) => node.id === "1");
 //   },
 // ]
 
-findNode(tree, (node) => node.id === "x"); // undefined
+findNode(tree, (node) => node.id === 'x'); // undefined
 ```
 
 or
 
 ```ts
-const node = findNodeById(tree, "1");
+const node = findNodeById(tree, '1');
 ```
 
 ### `map(tree, mapNode)`
 
 ```ts
 const tree: TreeNode<{ data: string }> = {
-  id: "1",
-  data: "foo",
+  id: '1',
+  data: 'foo',
   children: [
     {
-      id: "2",
-      data: "bar",
+      id: '2',
+      data: 'bar',
       children: [],
     },
   ],
@@ -143,8 +159,8 @@ const mapped = map<{ data: string }>(tree, (node) => ({
 
 ```ts
 const tree = {
-  id: "1",
-  children: [{ id: "2", children: [] }],
+  id: '1',
+  children: [{ id: '2', children: [] }],
 };
 
 const copied = copy(tree);
@@ -160,13 +176,13 @@ console.log(tree === copied); // false
 
 ```ts
 const srcTree = {
-  id: "1",
-  children: [{ id: "2", children: [] }],
+  id: '1',
+  children: [{ id: '2', children: [] }],
 };
 
-const nodeToBeAdded = { id: "3", children: [] };
+const nodeToBeAdded = { id: '3', children: [] };
 
-const destTree = addNode(srcTree, nodeToBeAdded, { parentId: "1", index: 0 });
+const destTree = addNode(srcTree, nodeToBeAdded, { parentId: '1', index: 0 });
 // {
 //   id: '1',
 //   children: [
@@ -180,13 +196,13 @@ const destTree = addNode(srcTree, nodeToBeAdded, { parentId: "1", index: 0 });
 
 ```ts
 const srcTree = {
-  id: "1",
+  id: '1',
   children: [
-    { id: "2", children: [] },
-    { id: "3", children: [] },
+    { id: '2', children: [] },
+    { id: '3', children: [] },
   ],
 };
-const [destTree, removedNode] = removeNode(srcTree, "3");
+const [destTree, removedNode] = removeNode(srcTree, '3');
 
 console.log(removedNode); // { id: '3', children: [] }
 console.log(destTree);
@@ -197,21 +213,21 @@ console.log(destTree);
 //   ],
 // }
 
-removeNode(srcTree, "x"); // undefined
+removeNode(srcTree, 'x'); // undefined
 ```
 
 ### `moveNode(tree, id, dest)`
 
 ```ts
 const srcTree = {
-  id: "1",
+  id: '1',
   children: [
-    { id: "2", children: [] },
-    { id: "3", children: [] },
+    { id: '2', children: [] },
+    { id: '3', children: [] },
   ],
 };
 
-const destTree = moveNode(srcTree, "2", { parentId: "3", index: 0 });
+const destTree = moveNode(srcTree, '2', { parentId: '3', index: 0 });
 // {
 //   id: '1',
 //   children: [
@@ -226,10 +242,10 @@ const destTree = moveNode(srcTree, "2", { parentId: "3", index: 0 });
 
 ```ts
 const tree = {
-  id: "1",
+  id: '1',
   children: [
-    { id: "2", children: [] },
-    { id: "3", children: [] },
+    { id: '2', children: [] },
+    { id: '3', children: [] },
   ],
 };
 
