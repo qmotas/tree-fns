@@ -1,4 +1,4 @@
-name: Deno
+name: test
 
 on:
   push:

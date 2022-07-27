@@ -11,7 +11,7 @@ await build({
   },
   package: {
     name: "tree-fns",
-    version: Deno.args[0],
+    version: Deno.args[0]?.replace(/^v/, ""),
     description: "Simple utility functions for tree structure",
     license: "MIT",
     repository: {
