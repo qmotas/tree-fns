@@ -3,3 +3,4 @@
 .env.*
 Thumbs.db
 cov_profile
+npm
