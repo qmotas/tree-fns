@@ -14,7 +14,7 @@ tree-fns is available for Deno and Node.js.
 ### Deno
 
 ```ts
-import { TreeNode, walk } from 'https://deno.land/x/tree_fns@v0.1.0/mod.ts';
+import { TreeNode, walk } from 'https://deno.land/x/tree_fns@v0.1.1/mod.ts';
 ```
 
 ### npm
